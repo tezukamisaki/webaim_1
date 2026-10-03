@@ -1,0 +1,53 @@
+:root{--bg:#0c0f14;--panel:#151a22;--line:#283040;--text:#e8ecf2;--dim:#8d97a8;--acc:#5ec8ff}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,sans-serif}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+#xh{position:fixed;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:2}
+.xhc i{position:absolute;background:var(--c,#0fd)}
+#hud{position:fixed;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:28px;align-items:baseline;z-index:3;font-size:15px;color:var(--dim);text-shadow:0 1px 4px #000}
+#hud b{color:var(--text);font-variant-numeric:tabular-nums}
+#hud #hT{font-size:30px}
+#cd{position:fixed;inset:0;display:grid;place-items:center;font-size:120px;font-weight:700;z-index:4;pointer-events:none;text-shadow:0 2px 20px #000}
+.ov{position:fixed;inset:0;z-index:5;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;background:rgba(8,10,14,.82);padding:24px;backdrop-filter:blur(4px)}
+#pause,#result{align-items:center;cursor:pointer}
+
+/* ホーム */
+.home{flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(20,32,48,.8),rgba(6,8,12,.94))}
+.mark{margin:0;font-size:clamp(60px,13vw,132px);font-weight:800;letter-spacing:-.045em;line-height:1}
+.mark span:first-child{color:var(--dim);font-weight:600}
+.dl{position:relative;display:inline-block}
+.dl::after{content:"";position:absolute;left:50%;top:.13em;width:.15em;height:.15em;border:.035em solid var(--acc);border-radius:50%;transform:translateX(-50%)}
+.sub{color:var(--dim);margin:14px 0 40px;font-size:16px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,230px));gap:14px;width:100%;justify-content:center}
+.card{display:flex;flex-direction:column;gap:8px;text-align:left;padding:22px 20px;min-height:132px;border-radius:12px;background:rgba(21,26,34,.85)}
+.card b{font-size:21px}
+.card span{font-size:13px;line-height:1.55;color:var(--dim)}
+.card:hover{border-color:var(--acc);background:#1b2633}
+.ghost{margin-top:32px;background:none;color:var(--dim);padding:10px 34px;border-radius:999px}
+.ghost:hover{color:var(--text)}
+
+/* パネル共通 */
+.panel{width:100%;max-width:640px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px;margin:auto;cursor:default}
+.panel.center{text-align:center;max-width:480px}
+h2{margin:0 0 14px;font-size:22px}
+.panel p{color:var(--dim);margin:6px 0}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--dim);padding:10px 14px;white-space:nowrap}
+.tab[aria-selected=true]{color:var(--text);border-bottom-color:var(--acc)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.grid label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--dim)}
+#xhp{position:relative;grid-column:1/-1;height:110px;background:#10151d;border:1px solid var(--line);border-radius:8px}
+#xhp .xhc{position:absolute;left:50%;top:50%;width:0;height:0}
+
+button{font:inherit;color:var(--text);background:#202838;border:1px solid var(--line);border-radius:8px;padding:10px 16px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.big{background:var(--acc);color:#04121c;border:0;font-weight:700;font-size:17px;padding:12px 30px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input[type=number],select,input[type=file]{background:#0f131a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}
+input[type=color]{width:100%;height:36px;padding:0;border:1px solid var(--line);background:none}
+input:disabled{opacity:.5}
+.row{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.score{font-size:72px;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1.1}
+@media(max-width:700px){.cards,.grid{grid-template-columns:1fr}.card{min-height:0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}

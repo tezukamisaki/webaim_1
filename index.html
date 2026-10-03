@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>webaim</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="xh" class="xhc"></div>
+<div id="hud" hidden><b id="hT">60.0</b><span>Score <b id="hS">0</b></span><span>Acc <b id="hA">-</b></span></div>
+<div id="cd" hidden></div>
+
+<main id="home" class="ov home">
+  <h1 class="mark"><span>web</span>a<span class="dl">ı</span>m</h1>
+  <p class="sub">60 秒・固定視点のエイム練習</p>
+  <div class="cards">
+    <button class="card" data-mode="grid"><b>Gridshot</b><span>4×4 の盤面に 3 ターゲット。フリックの基本。</span></button>
+    <button class="card" data-mode="six"><b>Sixshot</b><span>6 つの小ターゲットを正確に撃ち抜く。</span></button>
+    <button class="card" data-mode="track"><b>Tracking</b><span>左右に動く的をクリック長押しで追う。</span></button>
+  </div>
+  <button id="openSet" class="ghost">設定</button>
+</main>
+
+<main id="settings" class="ov" hidden>
+  <div class="panel">
+    <h2>設定</h2>
+    <div class="tabs" role="tablist">
+      <button class="tab" data-t="tp1" aria-selected="true">感度</button>
+      <button class="tab" data-t="tp2" aria-selected="false">クロスヘア</button>
+      <button class="tab" data-t="tp3" aria-selected="false">テーマ</button>
+      <button class="tab" data-t="tp4" aria-selected="false">サウンド・表示</button>
+    </div>
+    <div class="tp grid" id="tp1">
+      <label>ゲーム<select data-k="game"><option value="valorant">Valorant</option><option value="apex">Apex / Source</option><option value="ow2">Overwatch 2</option><option value="custom">カスタム</option></select></label>
+      <label>感度<input data-k="sens" type="number" step="0.001" min="0.001"></label>
+      <label>FOV (水平)<input data-k="fov" id="fov" type="number" step="1"></label>
+      <label>Yaw<input data-k="yaw" id="yaw" type="number" step="0.0001" min="0.0001"></label>
+    </div>
+    <div class="tp grid" id="tp2" hidden>
+      <div id="xhp"><div class="xhc"></div></div>
+      <label>タイプ<select data-k="xType"><option value="dot">ドット</option><option value="cross">十字</option><option value="both">ドット＋十字</option></select></label>
+      <label>カラー<input data-k="xColor" type="color"></label>
+      <label>サイズ<input data-k="xSize" type="range" min="1" max="30"></label>
+      <label>太さ<input data-k="xThick" type="range" min="1" max="8"></label>
+      <label>Gap<input data-k="xGap" type="range" min="0" max="20"></label>
+      <label>輪郭の太さ<input data-k="xOutW" type="range" min="0" max="4"></label>
+      <label>輪郭の色<input data-k="xOutC" type="color"></label>
+    </div>
+    <div class="tp grid" id="tp3" hidden>
+      <label>壁<input data-k="wall" type="color"></label>
+      <label>床<input data-k="floor" type="color"></label>
+      <label>球体<input data-k="ball" type="color"></label>
+      <label>マテリアル<select data-k="mat"><option value="glossy">光沢</option><option value="matte">マット</option><option value="flat">フラット</option></select></label>
+    </div>
+    <div class="tp grid" id="tp4" hidden>
+      <label>ヒット音<select data-k="sound" id="snd"><option value="standard">Standard</option><option value="crisp">Crisp</option><option value="deep">Deep</option><option value="custom">カスタム MP3</option></select></label>
+      <label>MP3 (このセッションのみ)<input id="mp3" type="file" accept=".mp3,audio/mpeg"></label>
+      <label>音量<input data-k="vol" type="range" min="0" max="100"></label>
+      <label>FPS 上限<select data-k="fps"><option value="0">上限なし</option><option value="240">240</option><option value="144">144</option><option value="60">60</option></select></label>
+      <button id="test" type="button">試聴</button>
+    </div>
+    <div class="row"><button id="back" class="big">戻る</button></div>
+  </div>
+</main>
+
+<main id="pause" class="ov" hidden>
+  <div class="panel center">
+    <h2>一時停止</h2>
+    <p>画面をクリックすると 3 秒のカウントダウン後に再開します。</p>
+    <div class="row"><button data-act="retry">リトライ (R)</button><button data-act="set">設定</button><button data-act="menu">メニュー</button></div>
+  </div>
+</main>
+
+<main id="result" class="ov" hidden>
+  <div class="panel center">
+    <h2 id="rM"></h2>
+    <div class="score" id="rS">0</div>
+    <p id="rA"></p><p id="rH"></p>
+    <div class="row"><button data-act="retry" class="big">Retry (R)</button><button data-act="set">設定</button><button data-act="menu">メニュー</button></div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

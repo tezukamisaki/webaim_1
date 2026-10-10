@@ -8,7 +8,7 @@
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="xh" class="xhc"></div>
+<canvas id="xh" class="xhc"></canvas>
 <div id="hud" hidden><b id="hT">60.0</b><span>Score <b id="hS">0</b></span><span>Acc <b id="hA">-</b></span></div>
 <div id="cd" hidden></div>
 
@@ -30,36 +30,46 @@
       <button class="tab" data-t="tp1" aria-selected="true">感度</button>
       <button class="tab" data-t="tp2" aria-selected="false">クロスヘア</button>
       <button class="tab" data-t="tp3" aria-selected="false">テーマ</button>
-      <button class="tab" data-t="tp4" aria-selected="false">サウンド・表示</button>
+      <button class="tab" data-t="tp4" aria-selected="false">サウンド</button>
+      <button class="tab" data-t="tp5" aria-selected="false">表示</button>
     </div>
     <div class="tp grid" id="tp1">
+      <p class="hint">ゲーム内の感度をそのまま入力すると、同じ振り向き量になります。</p>
       <label>ゲーム<select data-k="game"><option value="valorant">Valorant</option><option value="apex">Apex / Source</option><option value="ow2">Overwatch 2</option><option value="custom">カスタム</option></select></label>
       <label>感度<input data-k="sens" type="number" step="0.001" min="0.001"></label>
       <label>FOV (水平)<input data-k="fov" id="fov" type="number" step="1"></label>
-      <label>Yaw<input data-k="yaw" id="yaw" type="number" step="0.0001" min="0.0001"></label>
+      <label>Yaw (カスタムのみ)<input data-k="yaw" id="yaw" type="number" step="0.0001" min="0.0001"></label>
     </div>
     <div class="tp grid" id="tp2" hidden>
-      <div id="xhp"><div class="xhc"></div></div>
+      <div id="xhp"><canvas class="xhc"></canvas></div>
+      <p class="hint">数値の範囲は Valorant のクロスヘア設定に合わせています（単位は px）。</p>
       <label>タイプ<select data-k="xType"><option value="dot">ドット</option><option value="cross">十字</option><option value="both">ドット＋十字</option></select></label>
       <label>カラー<input data-k="xColor" type="color"></label>
-      <label>サイズ<input data-k="xSize" type="range" min="1" max="30"></label>
-      <label>太さ<input data-k="xThick" type="range" min="1" max="8"></label>
-      <label>Gap<input data-k="xGap" type="range" min="0" max="20"></label>
-      <label>輪郭の太さ<input data-k="xOutW" type="range" min="0" max="4"></label>
+      <label>長さ (0–20)<div class="sl"><input data-k="xSize" type="range" min="0" max="20"><input data-k="xSize" type="number" min="0" max="20" step="1"></div></label>
+      <label>太さ (0–10)<div class="sl"><input data-k="xThick" type="range" min="0" max="10"><input data-k="xThick" type="number" min="0" max="10" step="1"></div></label>
+      <label>中心の隙間 (0–20)<div class="sl"><input data-k="xGap" type="range" min="0" max="20"><input data-k="xGap" type="number" min="0" max="20" step="1"></div></label>
+      <label>中心ドットの大きさ (0–6)<div class="sl"><input data-k="xDot" type="range" min="0" max="6"><input data-k="xDot" type="number" min="0" max="6" step="1"></div></label>
+      <label>輪郭の太さ (0–6 / 0でなし)<div class="sl"><input data-k="xOutW" type="range" min="0" max="6"><input data-k="xOutW" type="number" min="0" max="6" step="1"></div></label>
       <label>輪郭の色<input data-k="xOutC" type="color"></label>
     </div>
     <div class="tp grid" id="tp3" hidden>
+      <p class="hint">練習ルームと球体の見た目を変えます。</p>
       <label>壁<input data-k="wall" type="color"></label>
       <label>床<input data-k="floor" type="color"></label>
       <label>球体<input data-k="ball" type="color"></label>
-      <label>マテリアル<select data-k="mat"><option value="glossy">光沢</option><option value="matte">マット</option><option value="flat">フラット</option></select></label>
+      <label>球体のマテリアル<select data-k="mat"><option value="glossy">光沢</option><option value="matte">マット</option><option value="flat">フラット</option></select></label>
     </div>
     <div class="tp grid" id="tp4" hidden>
+      <p class="hint">MP3 は今回のセッション中だけ有効です（ページを閉じると消えます）。</p>
       <label>ヒット音<select data-k="sound" id="snd"><option value="standard">Standard</option><option value="crisp">Crisp</option><option value="deep">Deep</option><option value="custom">カスタム MP3</option></select></label>
-      <label>MP3 (このセッションのみ)<input id="mp3" type="file" accept=".mp3,audio/mpeg"></label>
-      <label>音量<input data-k="vol" type="range" min="0" max="100"></label>
-      <label>FPS 上限<select data-k="fps"><option value="0">上限なし</option><option value="240">240</option><option value="144">144</option><option value="60">60</option></select></label>
+      <label>MP3 ファイル<input id="mp3" type="file" accept=".mp3,audio/mpeg"></label>
+      <label>音量 (0–100)<div class="sl"><input data-k="vol" type="range" min="0" max="100"><input data-k="vol" type="number" min="0" max="100" step="1"></div></label>
       <button id="test" type="button">試聴</button>
+    </div>
+    <div class="tp grid" id="tp5" hidden>
+      <p class="hint">「上限なし」はモニターのリフレッシュレートに合わせて描画します。スコアや速度は FPS に依存しません。</p>
+      <label>FPS 上限<select data-k="fpsMode"><option value="0">上限なし</option><option value="360">360</option><option value="240">240</option><option value="144">144</option><option value="60">60</option><option value="custom">カスタム</option></select></label>
+      <label id="fpsCL" hidden>上限値 (10–1000)<input data-k="fpsCustom" type="number" min="10" max="1000" step="1"></label>
     </div>
     <div class="row"><button id="back" class="big">戻る</button></div>
   </div>
@@ -68,8 +78,9 @@
 <main id="pause" class="ov" hidden>
   <div class="panel center">
     <h2>一時停止</h2>
-    <p>画面をクリックすると 3 秒のカウントダウン後に再開します。</p>
-    <div class="row"><button data-act="retry">リトライ (R)</button><button data-act="set">設定</button><button data-act="menu">メニュー</button></div>
+    <p>再開すると 3 秒のカウントダウンのあと、続きから始まります。</p>
+    <div class="row"><button data-act="resume" class="big">続きから再開</button></div>
+    <div class="row"><button data-act="retry">最初からやり直す (R)</button><button data-act="set">設定</button><button data-act="menu">メニュー</button></div>
   </div>
 </main>
 

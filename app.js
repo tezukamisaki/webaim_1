@@ -20,8 +20,8 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 const scene = new THREE.Scene();
 const cam = new THREE.PerspectiveCamera(75, 1, .1, 200);
 cam.rotation.order = 'YXZ';
-scene.add(new THREE.AmbientLight(0xffffff, .7));
-const dl = new THREE.DirectionalLight(0xffffff, .8); dl.position.set(.3, 1, 1); scene.add(dl);
+scene.add(new THREE.AmbientLight(0xffffff, .65));
+const dl = new THREE.DirectionalLight(0xffffff, .45); dl.position.set(.3, 1, 1); scene.add(dl);
 
 function setFov() {
   const g = GAMES[s.game];
@@ -58,10 +58,15 @@ function drawXh() {
   const t = Math.round(s.xThick), g = Math.round(s.xGap), l = Math.round(s.xSize), o = Math.round(s.xOutW), d = Math.round(s.xDot);
   const h2 = v => -Math.floor(v / 2), sh = [];
   if (s.xType !== 'cross') sh.push([d, d, h2(d), h2(d), 1]);
-  if (s.xType !== 'dot') sh.push([t, l, h2(t), -(g + l)], [t, l, h2(t), g], [l, t, -(g + l), h2(t)], [l, t, g, h2(t)]);
+  if (s.xType !== 'dot') { const e = t & 1; // 太さが奇数のとき、中心の隙間が左右・上下で対称になるよう +側を1px送る
+    sh.push([t, l, h2(t), -(g + l)], [t, l, h2(t), g + e], [l, t, -(g + l), h2(t)], [l, t, g + e, h2(t)]); }
   const S = sh.filter(q => q[0] > 0 && q[1] > 0), dpr = window.devicePixelRatio || 1;
   document.querySelectorAll('canvas.xhc').forEach(cv => {
-    cv.width = Math.round((cv.clientWidth || 300) * dpr); cv.height = Math.round((cv.clientHeight || 110) * dpr);
+    // canvas の物理pxサイズと表示サイズを一致させ、拡大縮小(=1px の欠け)が起きないようにする
+    const par = cv.id === 'xh' ? null : cv.parentElement;
+    const cw = par ? (par.clientWidth || 300) : innerWidth, ch = par ? (par.clientHeight || 110) : innerHeight;
+    cv.width = Math.floor(cw * dpr); cv.height = Math.floor(ch * dpr);
+    cv.style.width = cv.width / dpr + 'px'; cv.style.height = cv.height / dpr + 'px';
     const x = cv.getContext('2d'), cx = cv.width >> 1, cy = cv.height >> 1;
     const draw = (color, grow) => { x.fillStyle = color; S.forEach(([w, h, a, b, r]) => {
       if (r) { x.beginPath(); x.arc(cx + a + w / 2, cy + b + h / 2, w / 2 + grow, 0, 7); x.fill(); }
@@ -90,6 +95,7 @@ document.querySelectorAll('[data-k]').forEach(el => {
     if (k === 'game') syncGame(true);
     if (k === 'fov') syncGame(false);
     if (k === 'wall' || k === 'floor') buildRoom();
+    if (k === 'ball' || k === 'mat') applyBall();
     if (k === 'vol' && mg) mg.gain.value = s.vol / 100;
     if (k.startsWith('x')) drawXh();
     setFov(); save();
@@ -156,13 +162,20 @@ function place(mesh) {
   const [x, y] = cand[Math.random() * cand.length | 0] || [0, 0];
   mesh.position.set(x, y, -D); mesh.userData.t = G.el; mesh.visible = true;
 }
+function makeMat() {
+  const opt = {color: s.ball}, C = s.mat === 'flat' ? THREE.MeshBasicMaterial : s.mat === 'matte' ? THREE.MeshLambertMaterial : THREE.MeshPhongMaterial;
+  if (s.mat === 'glossy') opt.shininess = 90;
+  return new C(opt);
+}
+function applyBall() { // 球体の色・質感をゲーム中(一時停止中)でも即反映
+  if (!G) return;
+  const m = makeMat(); G.meshes.forEach(x => x.material = m); G.mat.dispose(); G.mat = m;
+}
 function newGame() {
   cleanup();
   const m = s.mode, trk = m === 'track', six = m === 'six';
   const r = trk ? 1 : six ? .3 : 1.2, n = trk ? 1 : six ? 6 : 3;
-  const opt = {color: s.ball}, C = s.mat === 'flat' ? THREE.MeshBasicMaterial : s.mat === 'matte' ? THREE.MeshLambertMaterial : THREE.MeshPhongMaterial;
-  if (s.mat === 'glossy') opt.shininess = 90;
-  G = {m, r, geo: new THREE.SphereGeometry(r, 24, 16), mat: new C(opt), meshes: [], el: 0, pts: 0, hits: 0, clicks: 0, on: 0, dir: 1, ft: 1, tk: .07};
+  G = {m, r, geo: new THREE.SphereGeometry(r, 24, 16), mat: makeMat(), meshes: [], el: 0, pts: 0, hits: 0, clicks: 0, on: 0, dir: 1, ft: 1, tk: .07};
   for (let i = 0; i < n; i++) {
     const mesh = new THREE.Mesh(G.geo, G.mat); mesh.visible = false; scene.add(mesh); G.meshes.push(mesh);
     if (trk) { mesh.position.set(0, 0, -D); mesh.visible = true; G.ft = rnd(); } else place(mesh);
